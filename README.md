@@ -2,7 +2,7 @@
 Witaj! Tu znajdziesz wszystkie materiały do szkolenia **PostgreSQL-zaawansowany**.
 ---
 ## 📋 Link zoom:
-https://us06web.zoom.us/j/82506355252?pwd=1YmJocpxGLuDK1mF9TxWe8dKlGq5eI.1
+---
 
 ---
 ## 📋 Godziny szkolenia:
