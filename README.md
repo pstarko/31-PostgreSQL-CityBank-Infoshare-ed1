@@ -6,10 +6,10 @@ https://us06web.zoom.us/j/82506355252?pwd=1YmJocpxGLuDK1mF9TxWe8dKlGq5eI.1
 
 ---
 ## 📋 Godziny szkolenia:
-4.09 - piątek: 8:30 - 15:00
-14.10 - środa: 8:30 - 15:00
-20.10 - wtorek: 8:30 - 15:00
-4.11 - środa: 8:30 - 15:00
+4.09 - piątek: 8:30 - 15:00 <br>
+14.10 - środa: 8:30 - 15:00 <br>
+20.10 - wtorek: 8:30 - 15:00 <br>
+4.11 - środa: 8:30 - 15:00 <br>
 
 ## 📋 Wymagania wstępne
 
