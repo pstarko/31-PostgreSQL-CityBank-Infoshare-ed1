@@ -28,3 +28,34 @@ group by
 having
 	sum(salary) > 8000
 	
+
+/*
+3. Dla każdego departamentu o nr pomiędzy 10 i 50 oraz etatu pokaż sumę płacy podstawowej
+wraz z podsumowaniami dla każdej podgrupy. Usuń podsumowanie dla całości(23 wiersze)
+
+*/
+
+select
+	department_id,
+	job_id,
+	grouping(department_id),
+	grouping(job_id),
+	sum(salary)
+	from employees e 
+where
+	department_id between 10 and 50
+group by 
+	cube(department_id,job_id) 
+having 
+	grouping(department_id) + 	grouping(job_id) <> 2
+	
+
+select
+	department_id,
+	job_id,
+	sum(salary)
+	from employees e 
+where
+	department_id between 10 and 50
+group by 
+	grouping sets((department_id,job_id), (department_id), (job_id)) 
