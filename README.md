@@ -6,10 +6,8 @@ Witaj! Tu znajdziesz wszystkie materiały do szkolenia **PostgreSQL-zaawansowany
 
 ---
 ## 📋 Godziny szkolenia:
-25.09 - piątek: 8:30 - 15:00 <br>
-14.10 - środa: 8:30 - 15:00 <br>
-20.10 - wtorek: 8:30 - 15:00 <br>
-4.11 - środa: 8:30 - 15:00 <br>
+30.09 - środa: 9:00 - 15:30 <br>
+08.10 - czwartek: 9:00 - 15:30 <br>
 
 ## 📋 Wymagania wstępne
 
