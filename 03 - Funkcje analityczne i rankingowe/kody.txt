@@ -1,0 +1,183 @@
+--Analityczne
+
+select 
+	department_id,
+	sum(salary)
+from employees
+where department_id in (10,20,30)
+group by 
+	rollup(department_id)
+
+	
+select 
+	department_id,
+	sum(salary)
+from employees
+where department_id in (10,20,30)
+group by 
+	cube(department_id)
+
+select 
+	department_id,
+	job_id,
+	sum(salary)
+from employees
+where department_id in (10,20,30)
+group by 
+	rollup(department_id, job_id)
+	
+	
+select 
+	department_id,
+	job_id,
+	sum(salary)
+from employees
+where department_id in (10,20,30)
+group by 
+	cube(department_id, job_id)	
+	
+select 
+	department_id,
+	job_id,
+	sum(salary)
+from employees
+where department_id in (10,20,30)
+group by department_id, job_id
+
+
+
+select 
+	department_id,
+	job_id,
+	grouping(department_id) gr_dept,
+	grouping(job_id) gr_job,
+ 	sum(salary)
+from employees
+where department_id in (10,20,30)
+	or department_id is null
+group by 
+	cube(department_id, job_id)	
+
+select 
+	department_id,
+	job_id,
+	grouping(department_id) gr_dept,
+	grouping(job_id) gr_job,
+ 	sum(salary)
+from employees
+where department_id in (10,20,30)
+	or department_id is null
+group by 
+	cube(department_id, job_id)	
+having
+	grouping(department_id) = 1
+	
+	
+select 
+	department_id,
+	job_id,
+	sum(salary) sum
+from employees
+where department_id in (10,20,30)
+group by 
+	grouping sets((department_id), (department_id, job_id), (job_id))
+
+	
+explain
+select 
+	department_id,
+	job_id,
+	sum(salary) sum
+from employees
+where department_id in (10,20,30)
+group by 
+	grouping sets((department_id), (), (job_id))
+	
+--rankingi
+SELECT
+	last_name,
+	salary,
+	row_number() over (order by salary) row_number
+FROM
+	employees
+	
+
+SELECT
+	last_name,
+	salary,
+	department_id,
+	row_number() over (partition by department_id order by salary) row_number
+FROM
+	employees	
+	
+
+SELECT
+	last_name,
+	salary,
+	rank() over (order by salary desc) rank,
+	dense_rank() over (order by salary desc) drank
+FROM
+	employees
+
+	
+SELECT
+	last_name,
+	salary,
+	department_id,
+	rank() over (partition by department_id order by salary desc) rank
+FROM
+	employees
+
+select
+	t1.*
+	from (
+	SELECT
+		last_name,
+		salary,
+		department_id,
+		rank() over (partition by department_id order by salary desc) rank
+	FROM
+		employees ) t1
+where
+ 	t1.rank = 1
+	
+ 	
+select 
+	t1. val,
+	cume_dist() over (order by t1.val) cume_dist,
+	percent_rank() over (order by t1.val) pr
+from(
+	SELECT
+	100 as val 
+	union
+	SELECT
+	200 as val 
+	union
+	SELECT
+	300 as val 
+	union
+	SELECT
+	600 as val ) t1
+
+SELECT
+	last_name,
+	job_id,
+	salary,
+	ntile(4) over (order by salary ) ntile
+FROM
+	employees
+where 
+	job_id in ('FI_ACCOUNT', 'IT_PROG')
+
+	
+	
+SELECT
+	last_name,
+	job_id,
+	salary,
+	width_bucket (salary, 5000, 20000, 4)
+FROM
+	employees
+	
+
+
