@@ -1,0 +1,40 @@
+/*
+
+1. Pokaż imię, nazwisko, numer działu i stanowisko dla wszystkich pracowników. Nie
+używaj konstrukcji „where department_id is null", rozwiąż problem połączeniami
+tabel (106 wierszy)
+
+*/
+
+select
+	e.first_name ,
+	e.last_name ,
+	e.department_id ,
+	j.job_title
+	from employees e join jobs j on e.job_id = j.job_id
+					 join departments d on e.department_id = d.department_id
+
+/*
+
+
+2. Pokaż pracowników pracujących w Seattle i Londynu (19 wierszy)
+
+*/
+explain
+select
+	e.first_name ,
+	e.last_name ,
+	l.city
+	from employees e join departments d on e.department_id = d.department_id
+					 join locations l on l.location_id = d.location_id
+where
+	l.city in ('Seattle', 'London')
+	
+	
+explain
+select
+	e.first_name ,
+	e.last_name ,
+	l.city
+	from employees e join departments d on e.department_id = d.department_id
+					 join locations l on l.location_id = d.location_id and l.city in ('Seattle', 'London')
