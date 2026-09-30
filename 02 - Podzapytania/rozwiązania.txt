@@ -30,3 +30,49 @@ where
 	e.hire_date = (select min(hire_Date) from employees
 					where job_id = 'FI_ACCOUNT') 
 	and  job_id = 'FI_ACCOUNT'
+
+
+/*
+3. Zobacz najdłużej pracujących pracowników każdego działu. (12 wierszy)
+
+
+*/
+explain
+select
+	e.last_name ,
+	e.hire_date ,
+	e.department_id ,
+	d.department_name 
+	from employees e join departments d on e.department_id = d.department_id
+where
+	(e.department_id , hire_Date) in (select department_id, min(hire_date)
+										from employees
+										group by department_id)
+explain
+select
+	e.last_name ,
+	e.hire_date ,
+	e.department_id ,
+	d.department_name 
+	from employees e join departments d on e.department_id = d.department_id
+where
+	hire_Date in (select min(hire_date)
+						from employees
+						where department_id = d.department_id )
+						
+/*
+4. Wyświetlaj te nazwy stanowisk, w których nie zatrudniono nikogo z działu
+MARKETING. Wykorzystaj podzapytanie w podzapytaniu (17 wierszy)
+
+
+*/
+explain
+select
+	*
+	from jobs
+where
+	job_id in (select job_id from employees
+				where department_id not in (select department_id from departments
+												where department_name = 'Marketing'))
+						
+
