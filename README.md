@@ -35,4 +35,4 @@ Przed szkoleniem zainstaluj:
 
 
 ```bash
-git clone https://github.com/pstarko/31-PostgreSQL-Intel-Infoshare.git
+git clone https://github.com/pstarko/31-PostgreSQL-CityBank-Infoshare-ed1.git
