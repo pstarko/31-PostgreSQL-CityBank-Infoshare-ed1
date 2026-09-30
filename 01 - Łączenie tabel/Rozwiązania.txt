@@ -97,3 +97,29 @@ select
 where
 	j.job_title in ('Accountant' , 'Purchasing Clerk')
 	and (e.salary + (e.salary * coalesce(e.commission_pct ,0))) * 12 > 37200
+/*
+7. Pokaż nazwy departamentów wraz z nazwiskami ich szefów i miejscem pracy
+(11 wierszy)
+
+8. Zmodyfikuj powyższe zapytanie w taki sposób, by zostały wyświetlone departamenty
+nie posiadające szefa. Wybierz właściwy typ połączenia tabel(27 wierszy)
+
+
+*/
+--7
+select
+	e.first_name ,
+	e.last_name ,
+	d.department_name ,
+	l.city 
+	from employees e join departments d on e.employee_id = d.manager_id
+					 join locations l on l.location_id = d.location_id 
+
+--7
+select
+	e.first_name ,
+	e.last_name ,
+	d.department_name ,
+	l.city 
+	from employees e right join departments d on e.employee_id = d.manager_id
+					 join locations l on l.location_id = d.location_id 
