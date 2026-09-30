@@ -1,0 +1,219 @@
+--Podzapytania
+
+select 
+	first_name,
+	last_name,
+	department_id 
+from employees 
+where
+	department_id = 
+		(select department_id from departments 
+			where department_name = 'Shipping')
+
+explain
+select 
+	first_name,
+	last_name,
+	department_id 
+from employees 
+where
+	department_id in 
+			(select department_id 
+				from departments 
+				where department_name in ('Shipping','Administration'))
+
+--ANY, ALL
+explain (analyze, buffers)
+select 
+	first_name,
+	last_name,
+	salary,
+	department_id
+from employees
+where salary > ANY (select salary from employees
+					where department_id = 20)
+	
+explain (analyze, buffers)
+select 
+	first_name,
+	last_name,
+	salary,
+	department_id
+from employees
+where salary > (select min(salary) from employees
+					where department_id = 20)
+					
+explain (analyze, buffers)
+select 
+	first_name,
+	last_name,
+	salary,
+	department_id
+from employees
+where salary > ALL (select salary from employees
+					where department_id = 20)
+	
+explain (analyze, buffers)
+select 
+	first_name,
+	last_name,
+	salary,
+	department_id
+from employees
+where salary > (select max(salary) from employees
+					where department_id = 20)
+
+--korelacja
+explain (analyze, buffers)
+select 
+	first_name,
+	last_name,
+	salary,
+	department_id
+from employees e
+where salary > (select avg(salary) from employees
+					where department_id = e.department_id)
+
+					
+select 
+	department_name
+from departments d
+	where 
+		EXISTS (select 1 from employees
+					where department_id = d.department_id )
+
+select 
+	department_name
+from departments d
+	where 
+		not EXISTS (select 1 from employees
+					where department_id = d.department_id )
+			
+--table derriver, column derrived
+explain
+select 
+	first_name,
+	last_name,
+	salary + (salary * coalesce(commission_pct,0)) full_salary
+from employees e
+where salary + (salary * coalesce(commission_pct,0)) > 5000
+
+explain
+select 
+	t1.*
+	from (
+		select 
+			first_name,
+			last_name,
+			salary + (salary * coalesce(commission_pct,0)) full_salary
+		from employees e ) t1
+where t1.full_salary > 5000
+	
+
+select 
+	first_name,
+	last_name,
+	(select department_name from departments where department_id = e.department_id) dep_name
+from employees e
+
+select
+	e.last_name,
+	e.salary
+from employees e
+where
+(department_id, salary) in 
+			(select department_id, max(salary) 
+				from employees
+				group by department_id)
+
+--CTE
+explain
+WITH high_earn AS (
+		SELECT last_name, salary
+		FROM employees
+		WHERE salary > 10000)
+SELECT *
+FROM high_earn;
+
+explain
+select
+	e.last_name ,
+	e2.last_name 
+	from employees e join employees e2 on e.employee_id = e2.manager_id 
+
+
+explain
+WITH query1 AS (
+		select
+			employee_id,
+			manager_id,
+			last_name
+		from employees)
+SELECT *
+FROM query1 e join query1 e2 on e.employee_id = e2.manager_id ;
+
+
+WITH RECURSIVE hierarchia AS (
+-- Kotwica: pracownicy bez managera (top-level)
+		SELECT
+		employee_id,
+		last_name,
+		manager_id,
+		1 AS poziom,
+		last_name::TEXT AS sciezka
+		FROM employees
+		WHERE manager_id IS NULL
+	UNION ALL
+		-- Rekurencja: dołączamy podwładnych
+		SELECT
+		e.employee_id,
+		e.last_name,
+		e.manager_id,
+		h.poziom + 1,
+		h.sciezka || ' > ' || e.last_name
+		FROM employees e
+		JOIN hierarchia h ON e.manager_id = h.employee_id)
+SELECT
+*
+FROM hierarchia
+ORDER BY sciezka;
+
+-- Wymuszenie materializacji (zapisanie wyniku do tymczasowej struktury)
+explain
+WITH dane AS MATERIALIZED (
+	SELECT 
+	e.last_name, 
+	d.department_id, 
+	d.department_name 
+	FROM employees e join departments d on e.department_id = d.department_id 
+)
+SELECT * FROM dane WHERE department_id < 100;
+
+				
+				
+CREATE OR REPLACE FUNCTION get_employees_departments()
+RETURNS TABLE (
+    last_name      VARCHAR,
+    department_id  INT,
+    department_name VARCHAR
+)
+LANGUAGE sql
+AS $$
+    SELECT 
+        e.last_name, 
+        d.department_id, 
+        d.department_name 
+    FROM employees e
+    JOIN departments d ON e.department_id = d.department_id;
+$$;	
+				
+
+explain
+SELECT * FROM get_employees_departments();
+
+
+explain
+WITH dane AS MATERIALIZED (
+	SELECT * FROM get_employees_departments()
+)
+SELECT * FROM dane WHERE department_id < 100;
